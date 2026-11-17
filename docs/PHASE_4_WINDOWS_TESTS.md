@@ -66,7 +66,7 @@ These timings are single native command/confirmation samples, not audio-output l
 | ID | Result | Evidence / remaining manual scope |
 | --- | --- | --- |
 | P401 | Pass, automated | Eighteen protected source hashes; rendered pixels outside the new perimeter and inside the original cover match. Approved backdrop/glass code and CSS unchanged. |
-| P402 | Pass, automated; live observation not verified | 16 bars per edge, playing CSS animation, correct outward orientations; synthetic preview inspected. |
+| P402 | Pass, automated and user report | 16 bars per edge and outward orientations verified. User confirmed all four edges work with Spotify playing in the final release. |
 | P403 | Pass, automated | Exact control geometry at three sizes; maximum bar bounds avoid text, buttons and timeline. |
 | P404 | Pass, automated | Peak bars/glow bounded by perimeter and panel at all tested size/DPR combinations; transparent window edges remain clipped. Native desktop edge observation still manual. |
 | P405 | Pass, automated; live visual test not verified | Red/blue/gold synthetic palette and fast changes select current identity; existing live artwork retrieval confirmed by native probe. |
@@ -74,8 +74,8 @@ These timings are single native command/confirmation samples, not audio-output l
 | P407 | Not verified on this machine, live | Fake-IPC disconnect/recovery passes; actual Spotify close/reopen not performed. |
 | P408 | Pass, automated | Missing/corrupt art hides perimeter and preserves honest existing fallback UI. |
 | P409 | Pass, automated; live rapid skips not verified | Five-plus synthetic artwork updates converge without new media subscriptions. Live next/previous each verified separately. |
-| P410 | Not verified on this machine | Real visible shortcut animation while coding needs user observation. Native registration/routing retained; frontend/native transition tests pass. |
-| P411 | Not verified on this machine, full sequence | Isolated native hide/show/exit passes; real X → tray restore → tray Quit sequence not observed. |
+| P410 | Pass, user report and automated/native checks | User confirmed Ctrl+Alt+M show/hide is smooth in the final release without moving controls. Repeated focus variations remain a manual scenario. |
+| P411 | Partial | User confirmed X show/hide behavior; isolated native hide/show/exit passes. Full tray restore → tray Quit sequence not observed. |
 | P412 | Pass, automated/native | Seven frontend reversals and 20 native intent toggles; stale ack protection and absent-listener fallback pass. Repeated physical keypress feel remains manual. |
 | P413 | Pass, automated; live drag not verified | Pointer-events none, header reaches original native drag command, existing control handlers/hooks pass. |
 | P414 | Pass | Live bottom-left label and redundant paused caption absent; existing container geometry, useful statuses, Settings and demo disclosure retained. |
@@ -84,8 +84,8 @@ These timings are single native command/confirmation samples, not audio-output l
 | P417 | Pass, emulation; physical scaling not verified | 100/125/150% device-scale contexts at all three sizes pass alignment and clipping. No physical Windows display setting was changed. |
 | P418 | Not verified on this machine, live | Exact Spotify matcher and stale/non-Spotify command rejection pass units; native backend files unchanged. No concurrent YouTube session tested. |
 | P419 | Not verified on this machine | No 20–30 minute visible track-change soak or GPU-jank assessment. CSS-only bounded bars and paused/hidden suspension are tested. |
-| P420 | Pass, startup/deduplication; full live sequence not verified | Final release launched independently with no dev listeners and Spotify running; second launch exited 0, one resident retained. Visible UI/control sequence and installer installation remain manual. |
-| P421 | Pass, staged review; push status below | No secrets/build junk; user-provided origin, `main`. No force-push, history rewrite or GitHub release. |
+| P420 | Pass, startup/deduplication and user UI confirmation | Final release launched independently with no dev listeners; second launch exited 0, one resident retained. User confirmed perimeter and smooth hotkey/X behavior. Installer installation and individual packaged seek/volume sequences remain manual. |
+| P421 | Pass | Reviewed source committed and pushed to the user-provided origin on `main`; remote HEAD matched the implementation commit. No force-push, history rewrite or GitHub release. |
 
 ## Packaging
 
@@ -100,10 +100,14 @@ Ports 1420/1422/1423 had no listeners. `Start-Process` independently launched th
 
 The x64 release embeds the frontend, starts hidden and requires WebView2; it does not need Node/Vite. The NSIS installer is current-user, unsigned, and uses the existing WebView2 bootstrapper policy. Installation/uninstallation, launch with Spotify closed and clean-machine runtime setup are not verified. A successful resident-process launch does not by itself verify visible animation smoothness or all packaged controls.
 
+After that final launch, the user was asked whether bars appear on all four edges with Spotify playing and Ctrl+Alt+M/X show/hide smoothly without moving controls. The user replied **“yes it works”**. This confirms those visible scenarios separately from the process checks. It does not establish a physical-DPI/monitor test, full tray Quit, concurrent browser targeting or long soak.
+
 ## Publication and ownership
 
 The original folder had no `.git` metadata. A local `main` repository was initialized without replacing application files. The user supplied `https://github.com/devashishbobby/Spotify-PiP` and explicitly selected MIT. README, LICENSE, npm and Cargo metadata credit **Devashish Bobby**. GitHub repository description and topics were updated successfully using existing authenticated credentials; no credential was written into source or tool output.
 
 An initial fetch temporarily failed DNS resolution for `github.com`; subsequent fetch and remote checks succeeded and returned no branches. Final staged review excludes `node_modules`, Rust `target`, frontend `dist`, test results, caches, real artwork, credentials, local environment files, machine-specific runtime JSON and binaries. Only original icons and synthetic validation screenshots are intentional binary sources. `.env.example` is a harmless mock-mode example. Prior local release evidence JSON is explicitly ignored and is not linked as a public artifact.
 
-Final review of 112 intended staged files found no secret/private-key/token patterns, private absolute paths, generated artifacts or unapproved environment files. `git diff --cached --check` passed; intentional Markdown hard-break whitespace is configured explicitly. The largest staged blob is Cargo.lock at about 125 KB. No remote URL was invented. No tag, force-push or GitHub release was requested or created. The implementation commit and verified push result are recorded after delivery below.
+Final review of 112 intended staged files found no secret/private-key/token patterns, private absolute paths, generated artifacts or unapproved environment files. `git diff --cached --check` passed; intentional Markdown hard-break whitespace is configured explicitly. The largest staged blob is Cargo.lock at about 125 KB. No remote URL was invented. No tag, force-push or GitHub release was requested or created.
+
+Implementation commit: [`a35a4bfa7e6872464a92feb3eef4cdf96cab8fd9`](https://github.com/devashishbobby/Spotify-PiP/commit/a35a4bfa7e6872464a92feb3eef4cdf96cab8fd9), authored by Devashish Bobby. `git push -u origin main` succeeded, and `git ls-remote origin refs/heads/main` returned that exact hash. A follow-up documentation commit records this delivery evidence and the user's final live confirmation. Repository: [devashishbobby/Spotify-PiP](https://github.com/devashishbobby/Spotify-PiP).

@@ -1,0 +1,43 @@
+/* The anchor occupies exactly the existing artwork's space; no layout shifts. */
+.album-visualizer-anchor { position:relative; width:88px; height:88px; flex-shrink:0; }
+@media (min-height:240px) { .album-visualizer-anchor { width:96px; height:96px; } }
+.album-perimeter, .album-perimeter * { pointer-events:none !important; user-select:none; }
+.album-perimeter {
+  position:absolute; inset:-10px; overflow:hidden; isolation:isolate; contain:paint;
+  color:var(--perimeter-color); transition:color 600ms ease, opacity 180ms ease;
+}
+.album-perimeter[data-state='off'] { opacity:0; visibility:hidden; }
+.perimeter-edge { position:absolute; inset:10px; }
+.perimeter-bar { position:absolute; background:currentColor; opacity:.36; }
+.perimeter-pulse {
+  display:block; position:absolute; background:currentColor;
+  box-shadow:0 0 2px currentColor; opacity:.72;
+  animation:perimeter-equalize var(--bar-duration) ease-in-out var(--bar-delay) infinite;
+  animation-play-state:paused;
+}
+.perimeter-edge[data-side='top'] .perimeter-bar,
+.perimeter-edge[data-side='bottom'] .perimeter-bar { left:var(--bar-position); width:2px; height:1px; transform:translateX(-50%); }
+.perimeter-edge[data-side='top'] .perimeter-bar { bottom:calc(100% + 2px); }
+.perimeter-edge[data-side='bottom'] .perimeter-bar { top:calc(100% + 2px); }
+.perimeter-edge[data-side='top'] .perimeter-pulse,
+.perimeter-edge[data-side='bottom'] .perimeter-pulse { width:2px; height:7px; transform-origin:center bottom; }
+.perimeter-edge[data-side='top'] .perimeter-pulse { bottom:0; }
+.perimeter-edge[data-side='bottom'] .perimeter-pulse { top:0; transform-origin:center top; }
+.perimeter-edge[data-side='left'] .perimeter-bar,
+.perimeter-edge[data-side='right'] .perimeter-bar { top:var(--bar-position); height:2px; width:1px; transform:translateY(-50%); }
+.perimeter-edge[data-side='left'] .perimeter-bar { right:calc(100% + 2px); }
+.perimeter-edge[data-side='right'] .perimeter-bar { left:calc(100% + 2px); }
+.perimeter-edge[data-side='left'] .perimeter-pulse,
+.perimeter-edge[data-side='right'] .perimeter-pulse { height:2px; width:7px; transform-origin:right center; animation-name:perimeter-equalize-horizontal; }
+.perimeter-edge[data-side='left'] .perimeter-pulse { right:0; }
+.perimeter-edge[data-side='right'] .perimeter-pulse { left:0; transform-origin:left center; }
+.album-perimeter[data-state='playing'][data-visible='true'] .perimeter-pulse { animation-play-state:running; }
+.album-perimeter[data-state='paused'] .perimeter-bar { opacity:.22; transition:opacity 200ms ease; }
+.album-perimeter[data-state='paused'] .perimeter-pulse { opacity:0; transition:opacity 200ms ease; }
+.album-perimeter[data-visible='false'] { visibility:hidden; }
+@keyframes perimeter-equalize { 0%,100% {transform:scaleY(.22)} 26% {transform:scaleY(var(--bar-peak))} 53% {transform:scaleY(.36)} 78% {transform:scaleY(.72)} }
+@keyframes perimeter-equalize-horizontal { 0%,100% {transform:scaleX(.22)} 26% {transform:scaleX(var(--bar-peak))} 53% {transform:scaleX(.36)} 78% {transform:scaleX(.72)} }
+@media (prefers-reduced-motion:reduce) {
+  .album-perimeter, .album-perimeter * { animation:none !important; transition:none !important; }
+  .perimeter-pulse { display:none; }
+}

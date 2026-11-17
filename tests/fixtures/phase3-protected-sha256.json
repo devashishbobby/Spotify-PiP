@@ -1,0 +1,74 @@
+[
+  {
+    "path": "src/components/AmbientBackdrop.tsx",
+    "sha256": "0a0cd5ba5a4583fc1c8b7f6e093834b13177402e4cac3de9cabad63793740fa1"
+  },
+  {
+    "path": "src/styles/ambient-theme.css",
+    "sha256": "160ee9097a4b1a5df1322107da754cb3e77c2bdb49dffb2ecc7285ee5e685387"
+  },
+  {
+    "path": "src/hooks/useAmbientTheme.ts",
+    "sha256": "cd320b29b25a531b32a2c33f98e8df2e83a4bea07cbcbd9ea309e86ff63c8d59"
+  },
+  {
+    "path": "src/lib/ambientPalette.ts",
+    "sha256": "70dbdf2902c3c18b9d0c46f353f0111ff41c9095be1cd913d66613d7eccd5b16"
+  },
+  {
+    "path": "src/styles/player.css",
+    "sha256": "e0caed92dab34176dec269e6bf29806c5f017b5cbca4a90e95524a955ba9dcd4"
+  },
+  {
+    "path": "src/styles/tokens.css",
+    "sha256": "55f1c02818f8eedfbb7084bf2ca0cd3972c6a409fb1838e4c2574880b4c723f6"
+  },
+  {
+    "path": "src/components/AlbumArt.tsx",
+    "sha256": "da44228da5b746617498cd6209e1bc6c41e67872a6145b79803430c006ac1f63"
+  },
+  {
+    "path": "src/components/TransportControls.tsx",
+    "sha256": "99488e79ca77fdab5497534baeaf03132a3df9d955b3b13f023fd195a189b517"
+  },
+  {
+    "path": "src/components/ProgressTrack.tsx",
+    "sha256": "e9e7550b62652ba15a6b2e7a036cccaa485dc3ef4b1e53ad4c910a8e8899db0e"
+  },
+  {
+    "path": "src/components/VolumeControl.tsx",
+    "sha256": "2515e359da858d7a6ff1769a05fb364cb63e29992c03344cf987d2a44ca4ec86"
+  },
+  {
+    "path": "src/components/Icon.tsx",
+    "sha256": "b580aee90c348b2474ca37e204db398ec33ab963530d651f43f41556101fc441"
+  },
+  {
+    "path": "src/hooks/useMediaSession.ts",
+    "sha256": "c6b1b265cd649d381a92241a60127eb00b5e675a8853e4badf1fdb11a56ae034"
+  },
+  {
+    "path": "src/lib/mediaApi.ts",
+    "sha256": "1007e335b4b06ac6a77d5cb30dcf01e0ba7c2632a1c9aa37fc036908e4471ec1"
+  },
+  {
+    "path": "src/types/media.ts",
+    "sha256": "4fcd78f6009ee376c869acd676d779beeb6dc465df0d367c553a0d58c51cab71"
+  },
+  {
+    "path": "src-tauri/src/media_session/windows.rs",
+    "sha256": "5432f15acbe6810ddb1f5c302253852e2928e401a62775f05db242ba2c009746"
+  },
+  {
+    "path": "src-tauri/src/media_session/mod.rs",
+    "sha256": "69aae9de135d60b7560c7f3bcfa24527a1c7ecac16615f9b81c737f0178e9c9d"
+  },
+  {
+    "path": "src-tauri/src/media_session/audio_volume.rs",
+    "sha256": "40c94654aa7f3789c2a67f8511b6e68a2e46cdf9d80a0af07487bb90e343d4a7"
+  },
+  {
+    "path": "src-tauri/tauri.conf.json",
+    "sha256": "4e02432cad42ecca70626eb816accc777e079ffa86c0eba7952ce9bccc280d86"
+  }
+]

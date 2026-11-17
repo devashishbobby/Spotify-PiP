@@ -1,0 +1,29 @@
+/* Decorative surfaces only. Protected player/control styles stay in player.css, unchanged. */
+.ambient-backdrop,
+.ambient-backdrop * { pointer-events: none !important; user-select: none; }
+.ambient-backdrop { position:absolute; inset:0; z-index:-1; overflow:hidden; isolation:isolate; border-radius:inherit; contain:paint; }
+.ambient-scene { position:absolute; inset:0; overflow:hidden; background:linear-gradient(145deg,#202020,#121212 65%); }
+.ambient-scene[data-artwork='true'] { background:radial-gradient(ellipse at 8% 20%,var(--ambient-a),transparent 72%),linear-gradient(140deg,var(--ambient-b),var(--ambient-c)); }
+.ambient-artwork { position:absolute; inset:-36px; background-size:cover; background-position:center; filter:blur(28px); opacity:.58; transform:scale(1.08); }
+.ambient-tint { position:absolute; inset:0; background:transparent; }
+.ambient-scene[data-artwork='true'] .ambient-tint { background:rgba(10,11,14,var(--ambient-shade)); }
+.ambient-glass-edge { position:absolute; inset:0; border-radius:inherit; box-shadow:inset 0 1px 0 #ffffff09,inset 0 -1px 0 #00000045; background:linear-gradient(145deg,#ffffff02,transparent 40%,#00000008); }
+.ambient-visualizer { position:absolute; inset:0; overflow:hidden; opacity:.4; }
+.ambient-scene[data-artwork='false'] .ambient-visualizer { display:none; }
+.ambient-glow { position:absolute; width:210px; height:130px; filter:blur(14px); opacity:.55; animation-play-state:paused !important; }
+.ambient-glow--one { left:-40px; bottom:-25px; background:radial-gradient(ellipse,var(--ambient-light-a),transparent 68%); animation:ambient-drift-one 12s ease-in-out infinite; }
+.ambient-glow--two { right:-30px; top:-40px; background:radial-gradient(ellipse,var(--ambient-light-b),transparent 68%); animation:ambient-drift-two 15s ease-in-out infinite; }
+.ambient-ribbon { position:absolute; inset:0; width:100%; height:100%; fill:none; stroke:var(--ambient-light-a); stroke-width:1.8; opacity:.64; filter:blur(.6px); animation:ambient-ribbon-flow 8s ease-in-out infinite; animation-play-state:paused; }
+.ambient-backdrop[data-motion='running'] .ambient-glow,
+.ambient-backdrop[data-motion='running'] .ambient-ribbon { animation-play-state:running !important; }
+.ambient-backdrop[data-visible='false'] .ambient-visualizer { visibility:hidden; }
+@keyframes ambient-drift-one { 50% {transform:translate(24px,-10px) scale(1.08)} }
+@keyframes ambient-drift-two { 50% {transform:translate(-20px,13px) scale(1.06)} }
+@keyframes ambient-ribbon-flow { 50% {transform:translateY(-8px);opacity:.36} }
+.ambient-scene--incoming { animation:ambient-arrive 600ms ease both; }
+.ambient-scene--outgoing { animation:ambient-leave 600ms ease both; }
+@keyframes ambient-arrive { from {opacity:0} to {opacity:1} }
+@keyframes ambient-leave { from {opacity:1} to {opacity:0} }
+.ambient-backdrop[data-visible='false'] .ambient-scene {animation:none;}
+.ambient-backdrop[data-visible='false'] .ambient-scene--outgoing {visibility:hidden;}
+@media(prefers-reduced-motion:reduce) { .ambient-backdrop * { animation:none !important; transition:none !important; } .ambient-scene--outgoing {visibility:hidden;} }

@@ -9,6 +9,8 @@ The preview uses fictional metadata and original synthetic artwork. Real playbac
 ## Features
 
 - Summon or hide the player from any app with **Ctrl+Alt+M**.
+- Desktop shortcut for easy access; **Start when Windows boots up** switch in Settings, enabled by default.
+- Custom app and shortcut icon from `debra.jpg`; clear Now Playing / Paused header labels without a status dot.
 - Real song, artist, artwork, playback state and timeline from Windows GSMTC.
 - Spotify-only play/pause, previous/next, conditional seeking and per-app volume/mute.
 - Album-reactive blurred glass with the approved Phase 3 background preserved.
@@ -28,7 +30,7 @@ npm.cmd install
 npm.cmd run tauri dev
 ```
 
-`npm.cmd` avoids PowerShell execution-policy restrictions on `npm.ps1`; `npm run tauri dev` also works in shells that permit it. The app starts hidden. Press **Ctrl+Alt+M**, or use the tray's **Show / Hide Player** action. If the primary shortcut is unavailable, the app tries **Ctrl+Alt+Shift+M** and displays the conflict in Settings.
+`npm.cmd` avoids PowerShell execution-policy restrictions on `npm.ps1`; `npm run tauri dev` also works in shells that permit it. Opening the app shows the player. Press **Ctrl+Alt+M**, or use the tray's **Show / Hide Player** action to toggle it. If the primary shortcut is unavailable, the app tries **Ctrl+Alt+Shift+M** and displays the conflict in Settings.
 
 Drag the header to move the window. The tray offers Show / Hide Player, Always on top, Settings, Reset position and **Quit SpotifyPiP**. X, Escape and native close requests hide the window; only Quit exits. A second launch restores the existing instance. Open Spotify and start a track if Windows has not published a session yet.
 
@@ -44,6 +46,10 @@ The current x64 build outputs:
 - `src-tauri/target/release/bundle/nsis/SpotifyPiP_0.1.0_x64-setup.exe`
 
 The release embeds the frontend and needs no Node, Vite or development terminal on the target machine. The current-user NSIS installer uses Tauri's default WebView2 bootstrapper when that runtime is missing, requiring network access. Local builds are unsigned. No GitHub release or installer assets are published automatically.
+
+After building, create a desktop shortcut with `powershell -File scripts/create-desktop-shortcut.ps1`. It points to the release executable and restores the existing player if already running. Run the script again if you move the project, or pass `-ExecutablePath` with the path to an installed executable.
+
+In **Player settings**, **Start when Windows boots up** is enabled on first launch. Windows then launches SpotifyPiP in the tray when you sign in, using the current user's `Software\Microsoft\Windows\CurrentVersion\Run` registry entry named `SpotifyPiP`. The switch updates that entry immediately; turning it off stays off across restarts. A `StartupConfigured` marker under `Software\com.devas.spotifypip` prevents the default from overriding your choice. An enabled entry follows the executable when you launch from a new location. No administrator rights are needed. Startup registration errors appear in Settings without preventing playback. Windows may delay sign-in startup; signing out or rebooting is not part of automated verification.
 
 ## Behavior and compatibility
 
@@ -89,6 +95,10 @@ The other diagnostic examples explicitly change playback when invoked. Debug dia
 ## Validation and limitations
 
 See **[Phase 4 Windows validation](docs/PHASE_4_WINDOWS_TESTS.md)** for current checks, production artifact evidence, and the Pass / Fail / Not verified matrix. Earlier evidence remains in [Phase 2](docs/PHASE_2_WINDOWS_TESTS.md) and [Phase 3](docs/PHASE_3_WINDOWS_TESTS.md).
+
+See **[Desktop shortcut and startup validation](docs/STARTUP_WINDOWS_TESTS.md)** for the subsequent startup setting, packaged UI checks, and updated build artifacts.
+
+See **[Icon and header validation](docs/ICON_HEADER_WINDOWS_TESTS.md)** for the Debra icon and the Now Playing / Paused / Player Settings header update.
 
 Automated checks cover exact control geometry/styles, protected background source hashes and rendered pixels, all four perimeter edges, 100/125/150% emulated device scale, rapid palette changes, reduced motion, transition reversals and native hide fallbacks. The user confirmed the final packaged release's four-sided bars and smooth Ctrl+Alt+M/X transitions without displaced controls. Full tray Quit interaction, physical DPI/monitor changes, Spotify restart with concurrent browser audio, installer installation and a 20-30 minute visible performance soak remain separate live-device checks. Build success does not establish these behaviors.
 

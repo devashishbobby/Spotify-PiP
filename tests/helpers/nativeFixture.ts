@@ -16,6 +16,8 @@ export async function nativeFixture(page: Page) {
     const desktop={alwaysOnTop:true,shortcut:'Ctrl+Alt+M',shortcutError:null,visible:true};
     let motion={revision:0,visible:true,animate:false,wasVisible:true};
     let reducedMotion=false;
+    let startup=localStorage.getItem('fixture-startup')!=='false';
+    let startupFailure=false;
     let snapshot={source:'spotify',status:'paused',title:'Soft focus',artist:'The Quiet Hours',album:'Test fixture',artworkDataUrl:artwork('red'),positionMs:86000,durationMs:222000,seekStartMs:0,seekEndMs:222000,lastTimelineUpdateUtcMs:null,snapshotAtUtcMs:Date.now(),playbackRate:1,canPlayPause:true,canPrevious:true,canNext:true,canSeek:true,volumeLevel:.75,volumeMuted:false,canSetVolume:true,errorCode:null,errorMessage:null,revision,sessionGeneration:1};
     const calls:string[]=[];
     const requests:{name:string;args:Record<string,unknown>}[]=[];
@@ -27,9 +29,14 @@ export async function nativeFixture(page: Page) {
       if(name==='plugin:event|listen'){listeners.set(++id,{event:args.event,handler:args.handler});return id;}
       if(name==='plugin:event|unlisten'){listeners.delete(args.eventId);return;}
       if(name==='get_desktop_status')return desktop;
+      if(name==='get_startup_enabled')return startup;
       if(name==='get_media_snapshot'||name==='media_refresh')return snapshot;
       calls.push(name);
       requests.push({name,args});
+      if(name==='set_startup_enabled'){
+        if(startupFailure)throw new Error('Windows startup access denied');
+        startup=!!args.enabled;localStorage.setItem('fixture-startup',String(startup));emit('desktop://startup',startup);return startup;
+      }
       if(name==='window_motion_ready'){reducedMotion=!!args.reducedMotion;return motion;}
       if(name==='window_transition_complete'){
         if(args.revision===motion.revision){motion={...motion,animate:false};desktop.visible=motion.visible;emit('desktop://status',{...desktop});}
@@ -40,6 +47,7 @@ export async function nativeFixture(page: Page) {
       return {accepted:true,snapshot};
     }};
     scope.__ambientFixture={calls,requests,color(name:string){publish({artworkDataUrl:artwork(name)});},publish,
+      failStartup(value:boolean){startupFailure=value;},
       event:emit,
       transition(visible:boolean){motion={revision:motion.revision+1,visible,animate:!reducedMotion,wasVisible:desktop.visible};if(visible||reducedMotion){desktop.visible=visible;emit('desktop://status',{...desktop});}emit('desktop://transition',{...motion});return motion.revision;},
       visible(visible:boolean){desktop.visible=visible;emit('desktop://status',{...desktop});},

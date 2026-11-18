@@ -2,7 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests",
-  testMatch: ["native-media.spec.ts", "ambient-ui.spec.ts", "phase4-ui.spec.ts"],
+  testMatch: ["native-media.spec.ts", "ambient-ui.spec.ts", "phase4-ui.spec.ts", "startup-settings.spec.ts"],
   workers: 2,
   use: {
     channel: "msedge",

@@ -1,5 +1,6 @@
 pub mod media_session;
 mod preferences;
+mod startup;
 mod tray;
 mod window_controller;
 
@@ -108,12 +109,27 @@ fn reset_window_position(app: tauri::AppHandle) -> Result<(), String> {
     window_controller::place(&app, true)
 }
 
+#[tauri::command]
+fn get_startup_enabled() -> Result<bool, String> {
+    startup::enabled()
+}
+
+#[tauri::command]
+fn set_startup_enabled(app: tauri::AppHandle, enabled: bool) -> Result<bool, String> {
+    let enabled = startup::set(enabled)?;
+    let _ = app.emit("desktop://startup", enabled);
+    Ok(enabled)
+}
+
 pub fn run() {
     let builder = tauri::Builder::default()
         .manage(Mutex::new(DesktopState::default()))
         .manage(SecondLaunch(AtomicBool::new(false)));
     #[cfg(windows)]
-    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, _, _| {
+    let builder = builder.plugin(tauri_plugin_single_instance::init(|app, args, _| {
+        if args.iter().any(|arg| arg == "--startup") {
+            return;
+        }
         app.state::<SecondLaunch>().0.store(true, Ordering::Relaxed);
         let handle = app.clone();
         let result = app.run_on_main_thread(move || {
@@ -138,9 +154,11 @@ pub fn run() {
                 }) { eprintln!("Cannot dispatch shortcut: {error}"); }
             }
         }).build())
-        .invoke_handler(tauri::generate_handler![get_desktop_status, hide_player, window_motion_ready, window_transition_complete, set_always_on_top, reset_window_position, get_media_snapshot, media_refresh, media_play_pause, media_next, media_previous, media_seek, media_set_volume, media_set_muted])
+        .invoke_handler(tauri::generate_handler![get_desktop_status, get_startup_enabled, set_startup_enabled, hide_player, window_motion_ready, window_transition_complete, set_always_on_top, reset_window_position, get_media_snapshot, media_refresh, media_play_pause, media_next, media_previous, media_seek, media_set_volume, media_set_muted])
         .setup(|app| {
             app.manage(PreferencesStore::open(app.path().app_config_dir()?.join("window-preferences.json"))?);
+            // A startup registration failure must not prevent the player from opening.
+            if let Err(error) = startup::initialize() { eprintln!("{error}"); }
             window_controller::restore(app.handle()).map_err(std::io::Error::other)?;
             app.manage(MediaService::start(app.handle().clone())?);
             // Register once per process, never in the React/WebView lifecycle.
@@ -188,6 +206,8 @@ pub fn run() {
                 if let Some(error) = status.shortcut_error { eprintln!("{error}"); }
             }
             if app.state::<SecondLaunch>().0.swap(false,Ordering::Relaxed) {window_controller::show(app.handle()).map_err(std::io::Error::other)?;}
+            // Desktop shortcuts open immediately; Windows sign-in stays in the tray.
+            if !std::env::args().any(|arg| arg == "--startup") {window_controller::show(app.handle()).map_err(std::io::Error::other)?;}
             Ok(())
         })
         .build(tauri::generate_context!());

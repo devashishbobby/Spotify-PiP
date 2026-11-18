@@ -1,0 +1,4 @@
+/* Keep all three settings and Reset position visible at the minimum window size. */
+.settings--startup .setting-row {
+  height: 24px;
+}

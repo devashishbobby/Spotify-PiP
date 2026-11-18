@@ -1,4 +1,7 @@
 fn main() {
+    // Tauri caches native resources separately from the frontend/Rust code.
+    // Rebuild the embedded Windows icon whenever the icon assets change.
+    println!("cargo:rerun-if-changed=icons");
     tauri_build::build();
     // Native window tests link TaskDialogIndirect via Wry. Unlike the app binary,
     // the test harness does not receive Tauri's Common Controls v6 manifest.

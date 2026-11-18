@@ -15,6 +15,8 @@ import { Icon } from "./Icon";
 import { ProgressTrack } from "./ProgressTrack";
 import { TransportControls } from "./TransportControls";
 import { VolumeControl } from "./VolumeControl";
+import { StartupSetting } from "./StartupSetting";
+import "../styles/startup-settings.css";
 import { AmbientBackdrop } from './AmbientBackdrop';
 import { AlbumPerimeterVisualizer } from './AlbumPerimeterVisualizer';
 import { useWindowMotion } from '../hooks/useWindowMotion';
@@ -86,14 +88,11 @@ export function PlayerWindow() {
       <AmbientBackdrop artwork={media.snapshot.artworkDataUrl} status={media.snapshot.status} visible={native.visible} />
       <header className="player-header" onPointerDown={drag}>
         <div className="header-label">
-          <span
-            className={`status-dot ${media.snapshot.status === "playing" ? "is-playing" : ""}`}
-          />
           <span>
             {settings
               ? "PLAYER SETTINGS"
               : media.snapshot.status === "paused"
-                ? ""
+                ? "PAUSED"
                 : active
                   ? "NOW PLAYING"
                   : "SPOTIFY PIP"}
@@ -121,7 +120,7 @@ export function PlayerWindow() {
         </div>
       </header>
       {settings ? (
-        <section className="settings" aria-label="Player settings">
+        <section className="settings settings--startup" aria-label="Player settings">
           <div className="settings-heading">
             <button
               ref={backButton}
@@ -149,6 +148,7 @@ export function PlayerWindow() {
               }
             />
           </div>
+          <StartupSetting />
           <div className="setting-row">
             <span>Show / hide</span>
             <kbd>

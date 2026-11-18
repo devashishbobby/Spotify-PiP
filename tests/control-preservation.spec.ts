@@ -19,7 +19,7 @@ async function measure(page: Page) {
 }
 
 for (const size of [{width:320,height:208},{width:360,height:208},{width:480,height:280}]) {
-  test(`protected controls match Phase 2 at ${size.width} × ${size.height}`, async ({ page }) => {
+  test(`protected player controls match Phase 2 at ${size.width} × ${size.height}`, async ({ page }) => {
     await page.setViewportSize(size); await page.goto('/');
     await page.getByRole('button',{name:'Pause',exact:true}).click();
     await page.mouse.move(1,1);
@@ -40,14 +40,16 @@ for (const size of [{width:320,height:208},{width:360,height:208},{width:480,hei
     await page.getByRole('button',{name:'Spotify volume',exact:true}).click();
     await page.waitForTimeout(200); snapshots.volume = await measure(page);
     await page.getByRole('slider',{name:'Spotify volume level'}).press('Escape');
-    await page.getByRole('button',{name:'Player settings',exact:true}).click();
-    await page.waitForTimeout(200); snapshots.settings = await measure(page);
     const file = resolve('tests/fixtures',`phase2-controls-${size.width}.json`);
     if (process.env.UPDATE_CONTROL_BASELINE === '1') {
       mkdirSync(resolve('tests/fixtures'),{recursive:true});
       writeFileSync(file,JSON.stringify(snapshots,null,2)+'\n');
     } else {
-      expect(snapshots).toEqual(JSON.parse(readFileSync(file,'utf8')));
+      // Settings now intentionally include a third row. Their layout/behavior is
+      // covered by startup-settings.spec.ts; keep every player snapshot protected.
+      const { settings: _settings, ...playerBaseline } = JSON.parse(readFileSync(file,'utf8'));
+      // Baseline JSON omits optional undefined fields, as do older Playwright versions.
+      expect(JSON.parse(JSON.stringify(snapshots))).toEqual(playerBaseline);
     }
   });
 }

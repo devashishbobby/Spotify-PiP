@@ -85,15 +85,24 @@ test('perimeter follows playback, visibility, missing art, reduced motion and th
   expect(await page.evaluate(()=>(window as any).__ambientFixture.listeners())).toBe(1);
 });
 
-test('only the authorized decorative labels disappear and original controls remain usable',async({page})=>{
+test('header labels follow playback without a status dot and original controls remain usable',async({page})=>{
   await ready(page);
   await expect(page.locator('.player-footer')).not.toContainText('SPOTIFY PIP');
-  await expect(page.locator('.header-label')).not.toContainText(/ON PAUSE|PAUSED/i);
+  await expect(page.locator('.status-dot')).toHaveCount(0);
+  await expect(page.locator('.header-label')).toHaveText('PAUSED');
+  await page.getByRole('button',{name:'Play',exact:true}).click();
+  await expect(page.locator('.header-label')).toHaveText('NOW PLAYING');
+  await page.getByRole('button',{name:'Pause',exact:true}).click();
+  await expect(page.locator('.header-label')).toHaveText('PAUSED');
+  await page.mouse.move(1,1);
+  await page.getByRole('button',{name:'Play',exact:true}).blur();
+  await page.screenshot({path:'docs/validation/paused-header.png',omitBackground:true});
   await expect(page.getByRole('heading',{name:'Soft focus'})).toBeVisible();await expect(page.getByText('The Quiet Hours',{exact:true})).toBeVisible();
   for(const name of ['Player settings','Hide player','Previous track','Play','Next track','Spotify volume'])await expect(page.getByRole('button',{name,exact:true})).toBeVisible();
   await expect(page.getByRole('slider',{name:'Seek track'})).toHaveAttribute('aria-valuetext','1:26 of 3:42');
   await page.getByRole('button',{name:'Spotify volume',exact:true}).click();await expect(page.getByRole('slider',{name:'Spotify volume level'})).toBeFocused();
   await page.keyboard.press('Escape');await page.getByRole('button',{name:'Player settings',exact:true}).click();
+  await expect(page.locator('.header-label')).toHaveText('PLAYER SETTINGS');
   await expect(page.getByRole('button',{name:'Back to player'})).toBeFocused();await page.keyboard.press('Escape');
   await expect(page.getByRole('button',{name:'Player settings',exact:true})).toBeFocused();
   await page.locator('.player-header').click({position:{x:160,y:20}});

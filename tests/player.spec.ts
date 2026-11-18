@@ -140,11 +140,11 @@ for (const size of [
   });
 }
 
-test("keyboard focus returns from settings; reduced motion disables animation", async ({
+test("keyboard focus returns from settings with reduced motion and no status dot", async ({
   page,
 }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.locator(".status-dot")).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".status-dot")).toHaveCount(0);
   await page.getByRole("button", { name: "Player settings" }).click();
   await expect(
     page.getByRole("button", { name: "Back to player" }),
